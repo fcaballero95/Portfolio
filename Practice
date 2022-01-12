@@ -1,0 +1,142 @@
+#Pulling up every unique customer ID
+select
+  DISTINCT customer_id
+FROM
+  customer_data.customer_address
+
+#Finding duplicates
+SELECT 
+  name, 
+  customer_id
+FROM
+  customer_data.customer_address
+GROUP BY 
+  name, customer_id
+Having COUNT(*) > 1;
+
+
+#Showing customer ID over 5000 in descending order
+SELECT 
+  name, city, customer_id
+FROM 
+  customer_data.customer_address
+WHERE
+  customer_id>5000
+ORDER BY 
+  customer_id DESC;
+
+
+#Inserting data into database
+INSERT INTO customer_data.customer_address
+    (customer_id, address, city, state, zipcode, country)
+VALUES
+    (2645,'333 SQL Road', 'Jackson','MI',49202,'US')
+    
+    
+#Updating newly inserting data
+UPDATE 
+  customer_data.customer_address
+SET 
+  address = '123 New Address'
+WHERE 
+  customer_id = 2645
+
+
+#Creating new column that shows how many letters in country column (Verifying uniformity)
+SELECT 
+  LENGTH(country) AS letters_in_country
+FROM 
+  customer_data.customer_address
+
+
+#Finding extra spaces or invisible data (Cleaning)
+SELECT 
+  state
+FROM 
+  customer_data.customer_address
+WHERE
+  LENGTH(state) > 2
+  
+  
+#Trimmed extra spaces off customers from OH
+SELECT 
+  DISTINCT customer_id
+FROM 
+  customer_data.customer_address
+WHERE
+  TRIM(state) = 'OH'
+  
+  
+#Finding the incorrect data (Pulled up as USA instead of US)
+SELECT 
+  country
+FROM 
+  customer_data.customer_address
+WHERE
+  LENGTH(country) > 2
+  
+  
+#Pulling up all unique customer ID from US (Clean)
+SELECT 
+  DISTINCT customer_id
+FROM 
+  customer_data.customer_address
+WHERE
+  SUBSTR(country,1,2) = 'US'
+  
+  
+#Attempting to sort and discovering that schema purchase_price is a string instead of float.
+SELECT 
+  purchase_price
+FROM 
+  customer_data.customer_purchase
+ORDER BY 
+  purchase_price DESC
+  
+  
+#Converted purchase_price to correct datatype; positive result.
+SELECT 
+  CAST(purchase_price AS FLOAT64)
+FROM 
+  customer_data.customer_purchase`
+ORDER BY 
+  CAST(purchase_price as FLOAT64) DESC
+  
+  
+#Pulling date and purchase price; date came out as date and time (Cleaning required)
+SELECT 
+  date,
+  purchase_price
+FROM 
+  customer_data.customer_purchase
+WHERE
+  date BETWEEN '2020-12-01' AND '2020-12-31'
+  
+  
+ #Changed date to reflect only date without time (Clean)
+SELECT 
+  CAST(date AS date) AS date_only,
+  purchase_price
+FROM 
+  customer_data.customer_purchase
+WHERE
+  date BETWEEN '2020-12-01' AND '2020-12-31'
+  
+  
+  #Creating new product code by merging code and color on only couches.
+SELECT 
+  CONCAT(product_code, product_color) AS new_product_code
+FROM 
+  customer_data.customer_purchase
+WHERE
+  product='couch'
+  
+  
+  
+ #Getting all product information without nulls
+SELECT 
+  COALESCE (product,product_code) as product_info
+FROM
+  customer_data.customer_purchase
+
+ 
