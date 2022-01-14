@@ -139,6 +139,8 @@ SELECT
 FROM
   customer_data.customer_purchase
 
+
+#Grabbing all data that correlates to the genre comedy
 SELECT 
 *
 FROM 
@@ -146,7 +148,7 @@ FROM
 WHERE 
 Genre='comedy'
 
-
+#Ordering data on movies sorting by descending (most recent first) order
 SELECT 
 *
 FROM 
@@ -154,16 +156,18 @@ FROM
 ORDER BY 
 Release_Date DESC 
 
+#Getting only the first 10 births
 SELECT 
   *
 FROM 
   `bigquery-public-data.sdoh_cdc_wonder_natality.county_natality` 
 ORDER BY
   Births
-ASC
 LIMIT 
   10
-  
+
+
+#Creating a table for temp, windspeed, precipitation, ONLY for zipcodes 725030 and 744860; most recent dates first
 SELECT
   stn,
   date,
@@ -186,7 +190,9 @@ WHERE
   OR stn="744860" -- JFK
 ORDER BY
   date DESC,
-  
+
+
+#Gathers average temperature in the month of June
   SELECT
   AVG(temperature)
 FROM
@@ -195,7 +201,7 @@ WHERE
   date BETWEEN '2020-06-01'
   AND '2020-06-30'
   
-  
+#Combining names into one column while counting the number of trips and the average duration of them.  
 SELECT
   usertype,
   CONCAT(start_station_name," to ",end_station_name)AS route,
@@ -212,6 +218,7 @@ ORDER BY
 LIMIT
   10
 
+#Joining two databases with matching information
 #Can use LEFT/RIGHT/FULL OUTER JOIN
 SELECT
   employees.name AS employee_name,
@@ -235,7 +242,8 @@ JOIN
 ON
   orders.warehouse_id= warehouse.warehouse_id
   
-  
+
+#Finding out how many unique states are in the database
   SELECT
   COUNT(DISTINCT warehouse.state) AS num_states
 FROM
@@ -245,7 +253,7 @@ JOIN
 ON
   orders.warehouse_id= warehouse.warehouse_id
   
-  
+#Finding out which states were those as well as how many orders were from each  
 SELECT
   warehouse.state AS state,
   COUNT(DISTINCT order_id) AS num_orders
@@ -258,7 +266,7 @@ ON
 GROUP BY
   warehouse.state
   
-  
+# Displays the average number of bikes per station
   SELECT
   station_id,
   num_bikes_available,
@@ -270,7 +278,7 @@ GROUP BY
 FROM
   `bigquery-public-data.new_york_citibike.citibike_stations`
   
-  
+ #Getting the information of the stations with the most number of rides
 SELECT
   station_id,
   name,
@@ -280,18 +288,18 @@ FROM (
     start_station_id,
     COUNT(*) number_of_rides
   FROM
-    bigquery-public-DATA.new_york.citibike_trips
+    `bigquery-public-data.new_york_citibike.citibike_trips`
   GROUP BY
     start_station_id ) AS station_num_trips
 INNER JOIN
-  bigquery-public-DATA.new_york.citibike_stations
+  `bigquery-public-data.new_york_citibike.citibike_stations`
 ON
   station_id=start_station_id
 ORDER BY
   number_of_rides DESC
   
   
-  
+#Getting the data about the stations most used by subscribers  
   SELECT
   station_id,
   name
@@ -306,7 +314,7 @@ WHERE
   WHERE
     usertype= 'Subscriber' )
     
-    
+#Combining info to create new columns, filling in a new column with a specific text stating how each warehouse is doing, while combining 2 databases   
     SELECT
   warehouse.warehouse_id,
   CONCAT(warehouse.state,': ',warehouse.warehouse_alias) AS warehouse_name,
@@ -345,7 +353,7 @@ HAVING
   COUNT(orders.order_id)>0
 
 
-
+#Arithmetic through SQL (Addition)
 SELECT
   Date,
   Region,
@@ -356,7 +364,8 @@ SELECT
   Small_Bags+Large_Bags+XLarge_Bags AS Total_Bags_Calc
 FROM
   `aesthetic-forge-338018.avocado_data.avocado_prices`
-  
+
+#Percentage
 SELECT
   Date,
   Region,
@@ -367,7 +376,7 @@ FROM
 WHERE
   Total_Bags<>0
   
-  
+#Getting the information of number of rides per year
   SELECT
   EXTRACT(Year
   FROM
@@ -380,8 +389,7 @@ GROUP BY
 ORDER BY
   year
   
-  
-  
+ #Counting how many trips were at least 60 minutes long  
   WITH
   trips_over_1_hr AS(
   SELECT
